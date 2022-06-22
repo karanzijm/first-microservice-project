@@ -16,3 +16,17 @@ eureka:
       defaultZone: http://localhost:8761/eureka
   instance:
     hostname: localhost
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      bookOrderService:
+        registerHealthIndicator: true
+        eventConsumerBufferSize: 10
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 5s
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowSize: 3
+        slidingWindowType: COUNT_BASED

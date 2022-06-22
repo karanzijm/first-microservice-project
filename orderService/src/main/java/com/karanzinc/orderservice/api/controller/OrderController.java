@@ -5,6 +5,7 @@ import com.karanzinc.orderservice.api.common.TransactionRequest;
 import com.karanzinc.orderservice.api.common.TransactionResponse;
 import com.karanzinc.orderservice.api.entity.Order;
 import com.karanzinc.orderservice.api.service.OrderService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreaker;
 import org.springframework.cloud.circuitbreaker.resilience4j.Resilience4JCircuitBreakerFactory;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "order")
 public class OrderController {
     private final OrderService service;
-    private final Resilience4JCircuitBreakerFactory circuitBreakerFactory = null;
+//    private final Resilience4JCircuitBreakerFactory circuitBreakerFactory = null;
 
     @Autowired
     public OrderController(OrderService orderService){ this.service = orderService; }
@@ -23,10 +24,16 @@ public class OrderController {
     public String hello() {
         return "Hello World";
     }
-
+    private static final String bookOrderService = "bookOrderService";
+//    @CircuitBreaker(name = bookOrderService, fallbackMethod = "bookOrderFallback")
     @PostMapping(value = "/bookOrder")
     public TransactionResponse bookOrder(@RequestBody TransactionRequest transactionRequest) {
-        Resilience4JCircuitBreaker circuitBreaker = circuitBreakerFactory.create("")
+//        Resilience4JCircuitBreaker circuitBreaker = circuitBreakerFactory.create("")
         return service.saveOrder(transactionRequest);
     }
+
+    public String bookOrderFallback(Exception e) {
+        return "Order service is not available";
+    }
+
 }
