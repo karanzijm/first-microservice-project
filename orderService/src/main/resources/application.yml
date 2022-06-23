@@ -17,13 +17,25 @@ eureka:
   instance:
     hostname: localhost
 
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always
+
 resilience4j:
   circuitbreaker:
     instances:
-      bookOrderService:
+      payment:
         registerHealthIndicator: true
         eventConsumerBufferSize: 10
-        failureRateThreshold: 50
+        failureRateThreshold: 30
         minimumNumberOfCalls: 5
         automaticTransitionFromOpenToHalfOpenEnabled: true
         waitDurationInOpenState: 5s
